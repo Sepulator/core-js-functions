@@ -18,13 +18,13 @@
  *
  */
 function getCurrentFunctionName() {
-  throw new Error('Not implemented');
+  return getCurrentFunctionName.name;
 }
 
 /**
  * Returns the body of the function passed as argument.
  *
- * @params {function} func - Function to get the body.
+ * @param {Function} func - Function to get the body.
  * @return {string} - The body of the function passed as argument.
  *
  * @example
@@ -32,14 +32,15 @@ function getCurrentFunctionName() {
  *   getFunctionBody(hiHello) => "function hiHello() { console.log('hello world'); }"
  *
  */
-function getFunctionBody(/* func */) {
-  throw new Error('Not implemented');
+function getFunctionBody(func) {
+  if (!func) return '';
+  return func.toString();
 }
 
 /**
  * Returns the array where each element is the count of function arguments.
  *
- * @params {array} funcs - The array of functions.
+ * @param {array<function>} funcs - The array of functions.
  * @return {array} - The array of arguments count.
  *
  * @example
@@ -50,8 +51,8 @@ function getFunctionBody(/* func */) {
  *  ]) => [0, 1, 2]
  *
  */
-function getArgumentsCount(/* funcs */) {
-  throw new Error('Not implemented');
+function getArgumentsCount(funcs) {
+  return funcs.map((f) => f.length);
 }
 
 /**
@@ -70,8 +71,8 @@ function getArgumentsCount(/* funcs */) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
+function getPowerFunction(exponent) {
+  return (x) => x ** exponent;
 }
 
 /**
@@ -87,8 +88,17 @@ function getPowerFunction(/* exponent */) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...args) {
+  const { length } = args;
+  if (length === 0) return null;
+
+  return (x) => {
+    return args.reduce((sum, kof, i) => {
+      const power = length - 1 - i;
+      const ind = kof * x ** power;
+      return sum + ind;
+    }, 0);
+  };
 }
 
 /**
