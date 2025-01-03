@@ -105,7 +105,7 @@ function getPolynom(...args) {
  * Memoizes passed function and returns function
  * which invoked first time calls the passed function and then always returns cached result.
  *
- * @params {Function} func - function to memoize
+ * @param {Function} func - function to memoize
  * @return {Function} memoized function
  *
  * @example
@@ -115,8 +115,15 @@ function getPolynom(...args) {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  let random = null;
+  return () => {
+    if (!random) {
+      random = func();
+      return random;
+    }
+    return random;
+  };
 }
 
 /**
@@ -134,8 +141,20 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  let count = attempts;
+  return () => {
+    let result;
+    while (count > 0) {
+      try {
+        result = func();
+        count -= 1;
+      } catch (err) {
+        count -= 1;
+      }
+    }
+    return result;
+  };
 }
 
 /**
@@ -161,8 +180,20 @@ function retry(/* func, attempts */) {
  * cos(3.141592653589793) ends
  *
  */
-function logger(/* func, logFunc */) {
-  throw new Error('Not implemented');
+function logger(func, logFunc) {
+  return (...args) => {
+    const argsFormat = args
+      .map((arg) => {
+        if (typeof arg === 'function') return arg.toString();
+        if (typeof arg === 'object') return JSON.stringify(arg);
+        return `${arg}`;
+      })
+      .join(',');
+    logFunc(`${func.name}(${argsFormat}) starts`);
+    const result = func(...args);
+    logFunc(`${func.name}(${argsFormat}) ends`);
+    return result;
+  };
 }
 
 /**
